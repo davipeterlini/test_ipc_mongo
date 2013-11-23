@@ -1,0 +1,4 @@
+ExampleMessage
+    bool a
+    i32 b
+    string c
