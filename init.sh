@@ -28,10 +28,12 @@ reset() {
         kill_process_tree 1 $$
     fi
 
-    echo "-> Kill all services MongoDB..."    
     MONGOPID=`ps -ef | grep 'mongo' | grep -v grep | awk '{print $2}'`
-    kill -15 $MONGOPID &> /dev/null
-
+    if [ $MONGOPID == true ]; then
+         echo "-> Kill all services MongoDB..."    
+         kill -15 $MONGOPID &> /dev/null
+    fi
+   
     echo "-> Shutting down MongoDB instance 1..."
     mongod -f $RF_HOME/rftest/mongo/conf/master.conf --replSet rs0 --shutdown &> /dev/null
 

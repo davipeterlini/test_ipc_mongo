@@ -6,13 +6,6 @@
 #include <IpcMessage.h>
 #include <signal.h>
 
-// #include <stdlib.h>
-// #include <stdio.h>
-// #include <string.h>
-// #include <unistd.h>
-// #include <iostream>
-
-
 class ExampleProtocolProcessor : public IpcMessageProcessor {
     public:
         ExampleProtocolProcessor() { }
@@ -56,7 +49,7 @@ int main(int argc, char* argv[]) {
 	}
 
     // script of Mongo Replication
-    system("/home/routeflow/ipc/./init.sh");
+    system("/home/routeflow/test_ipc_mongo/./init.sh");
 
     // We need to establish the IPC service that will send and receive messages
     // The first argument must specify the ID
