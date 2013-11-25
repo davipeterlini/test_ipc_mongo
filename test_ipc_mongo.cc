@@ -31,7 +31,10 @@ void signal_callback_handler(int signum){
    printf("Caught signal %d\n",signum);
    // Cleanup and close up stuff here
 
-    system("/home/routeflow/test_ipc_mongo/./clean_instance.sh");
+    system("mongod -f /home/routeflow/test_ipc_mongo/mongo/conf/master.conf --replSet rs0 --shutdown");
+    system("mongod -f /home/routeflow/test_ipc_mongo/mongo/conf/master.conf --replSet rs0 --shutdown");
+    system("mongod -f /home/routeflow/test_ipc_mongo/mongo/conf/master.conf --replSet rs0 --shutdown");
+    system("rm -rf /home/routeflow/test_ipc_mongo/mongo/data/*/*");
 
    // Terminate program
    exit(signum);
