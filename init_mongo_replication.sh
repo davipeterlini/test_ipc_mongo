@@ -85,7 +85,8 @@ done
 
 
 # Up more two instances (ReplicaSet)
-mongo 192.168.10.1:27017 --eval "load('$RF_HOME/initReplicaSet.js')"
+mongo 192.168.10.1:27017 --eval "rs.add(\"192.168.10.1:27018\");" &> /dev/null
+mongo 192.168.10.1:27017 --eval "rs.add(\"192.168.10.1:27019\");" &> /dev/null
 
 echo "-> Waiting 30s for replica set intialization..."
 sleep 30

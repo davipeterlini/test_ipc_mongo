@@ -32,8 +32,8 @@ void signal_callback_handler(int signum){
    // Cleanup and close up stuff here
 
     system("mongod -f /home/routeflow/test_ipc_mongo/mongo/conf/master.conf --replSet rs0 --shutdown");
-    system("mongod -f /home/routeflow/test_ipc_mongo/mongo/conf/master.conf --replSet rs0 --shutdown");
-    system("mongod -f /home/routeflow/test_ipc_mongo/mongo/conf/master.conf --replSet rs0 --shutdown");
+    system("mongod -f /home/routeflow/test_ipc_mongo/mongo/conf/slave1.conf --replSet rs0 --shutdown");
+    system("mongod -f /home/routeflow/test_ipc_mongo/mongo/conf/slave2.conf --replSet rs0 --shutdown");
     system("rm -rf /home/routeflow/test_ipc_mongo/mongo/data/*/*");
 
    // Terminate program
@@ -66,7 +66,7 @@ int main(int argc, char* argv[]) {
     ipc.parallelListen(processor);  
     
     // Define qtd messages 
-    long int msgQtde = 1000;
+    long int msgQtde = 1000000;
 
     double cal = (msgQtde/2.0) + 1.0;
     string destination, data;
