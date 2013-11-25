@@ -1,13 +1,13 @@
-import rflib.ipc.RFProtocol as RFProtocol
+import ExampleProtocol.ExampleProtocol as Protocol
 import bson
 import threading
 import pymongo as mongo
 import time
 import sys
 
-from rflib.ipc.Ipc import Ipc
-from rflib.ipc.MongoUtils import MongoFactory
-from rflib.defs import *
+from ipc.Ipc import Ipc
+from ipc.MongoUtils import MongoFactory
+from defs import *
 
 FIELD_NAME_ID = "_id"
 FIELD_NAME_FROM = "from"
@@ -129,7 +129,7 @@ class MongoIpc(Ipc):
                 
                 time.sleep(MONGO_RETRY_INTERVAL)
                 
-        print "[OK]MongoIPC: Message sent"
+        #print "[OK]MongoIPC: Message sent"
         return True
         
 
@@ -146,51 +146,12 @@ class MongoIpcMessageFactory:
         message_content = message[FIELD_NAME_CONTENT]
         ipc_message = None
         
-        if int(message[FIELD_NAME_TYPE]) == RFProtocol.PORT_REGISTER:
+        if int(message[FIELD_NAME_TYPE]) == Protocol.EXAMPLE_MESSAGE:
             ipc_message = RFProtocol.PortRegister()
-            ipc_message.set_vm_id(message_content["vm_id"])
-            ipc_message.set_vm_port(message_content["vm_port"])
-            ipc_message.set_hwaddress(message_content["hwaddress"])
+            ipc_message.set_a(message_content["a"])
+            ipc_message.set_b(message_content["b"])
+            ipc_message.set_c(message_content["c"])
 
-        elif int(message[FIELD_NAME_TYPE]) == RFProtocol.PORT_CONFIG:
-            ipc_message = RFProtocol.PortConfig()
-            ipc_message.set_vm_id(message_content["vm_id"])
-            ipc_message.set_vm_port(message_content["vm_port"])
-            ipc_message.set_operation_id(message_content["operation_id"])
-
-        elif int(message[FIELD_NAME_TYPE]) == RFProtocol.DATAPATH_PORT_REGISTER:
-            ipc_message = RFProtocol.DatapathPortRegister()
-            ipc_message.set_ct_id(message_content["ct_id"])
-            ipc_message.set_dp_id(message_content["dp_id"])
-            ipc_message.set_dp_port(message_content["dp_port"])
-
-        elif int(message[FIELD_NAME_TYPE]) == RFProtocol.DATAPATH_DOWN:
-            ipc_message = RFProtocol.DatapathDown()
-            ipc_message.set_ct_id(message_content["ct_id"])
-            ipc_message.set_dp_id(message_content["dp_id"])
-
-        elif int(message[FIELD_NAME_TYPE]) == RFProtocol.VIRTUAL_PLANE_MAP:
-            ipc_message = RFProtocol.VirtualPlaneMap()
-            ipc_message.set_vm_id(message_content["vm_id"])
-            ipc_message.set_vm_port(message_content["vm_port"])
-            ipc_message.set_vs_id(message_content["vs_id"])
-            ipc_message.set_vs_port(message_content["vs_port"])
-
-        elif int(message[FIELD_NAME_TYPE]) == RFProtocol.DATA_PLANE_MAP:
-            ipc_message = RFProtocol.DataPlaneMap()
-            ipc_message.set_ct_id(message_content["ct_id"])
-            ipc_message.set_dp_id(message_content["dp_id"])
-            ipc_message.set_dp_port(message_content["dp_port"])
-            ipc_message.set_vs_id(message_content["vs_id"])
-            ipc_message.set_vs_port(message_content["vs_port"])
-
-        elif int(message[FIELD_NAME_TYPE]) == RFProtocol.ROUTE_MOD:
-            ipc_message = RFProtocol.RouteMod()
-            ipc_message.set_mod(message_content["mod"])
-            ipc_message.set_id(message_content["id"])
-            ipc_message.set_matches(message_content["matches"])
-            ipc_message.set_actions(message_content["actions"])
-            ipc_message.set_options(message_content["options"])
 
         else:
             return None
@@ -217,44 +178,11 @@ class MongoIpcMessageFactory:
         mongo_message[FIELD_NAME_TYPE] = ipc_message.get_type()
 
         message_content = {}
-        if int(ipc_message.get_type()) == RFProtocol.PORT_REGISTER:
-            message_content["vm_id"] = str(ipc_message.get_vm_id())
-            message_content["vm_port"] = str(ipc_message.get_vm_port())
-            message_content["hwaddress"] = str(ipc_message.get_hwaddress())
+        if int(ipc_message.get_type()) == Protocol.EXAMPLE_MESSAGE:
+            message_content["a"] = str(ipc_message.get_a())
+            message_content["b"] = str(ipc_message.get_b())
+            message_content["c"] = str(ipc_message.get_c())
 
-        elif int(ipc_message.get_type()) == RFProtocol.PORT_CONFIG:
-            message_content["vm_id"] = str(ipc_message.get_vm_id())
-            message_content["vm_port"] = str(ipc_message.get_vm_port())
-            message_content["operation_id"] = str(ipc_message.get_operation_id())
-
-        elif int(ipc_message.get_type()) == RFProtocol.DATAPATH_PORT_REGISTER:
-            message_content["ct_id"] = str(ipc_message.get_ct_id())
-            message_content["dp_id"] = str(ipc_message.get_dp_id())
-            message_content["dp_port"] = str(ipc_message.get_dp_port())
-
-        elif int(ipc_message.get_type()) == RFProtocol.DATAPATH_DOWN:
-            message_content["ct_id"] = str(ipc_message.get_ct_id())
-            message_content["dp_id"] = str(ipc_message.get_dp_id())
-
-        elif int(ipc_message.get_type()) == RFProtocol.VIRTUAL_PLANE_MAP:
-            message_content["vm_id"] = str(ipc_message.get_vm_id())
-            message_content["vm_port"] = str(ipc_message.get_vm_port())
-            message_content["vs_id"] = str(ipc_message.get_vs_id())
-            message_content["vs_port"] = str(ipc_message.get_vs_port())
-
-        elif int(ipc_message.get_type()) == RFProtocol.DATA_PLANE_MAP:
-            message_content["ct_id"] = str(ipc_message.get_ct_id())
-            message_content["dp_id"] = str(ipc_message.get_dp_id())
-            message_content["dp_port"] = str(ipc_message.get_dp_port())
-            message_content["vs_id"] = str(ipc_message.get_vs_id())
-            message_content["vs_port"] = str(ipc_message.get_vs_port())
-
-        elif int(ipc_message.get_type()) == RFProtocol.ROUTE_MOD:
-            message_content["mod"] = str(ipc_message.get_mod())
-            message_content["id"] = str(ipc_message.get_id())
-            message_content["matches"] = ipc_message.get_matches()
-            message_content["actions"] = ipc_message.get_actions()
-            message_content["options"] = ipc_message.get_options()
 
         else:
             return None

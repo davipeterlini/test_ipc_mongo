@@ -1,7 +1,7 @@
 import pymongo as mongo
 import sys
 import time
-from rflib.defs import *
+from defs import *
 
 class MongoFactory:
     def __init__(self):
